@@ -350,8 +350,9 @@ devtools::install_github("dkahle/ggmap", ref = "tidyup")
 
 library(ggmap)
 ggmap(get_googlemap(center = c(lon = -76.8, lat = -12.2)))
-
-register_google(key = "AIzaSyDFpHo77ydM96Pw33OWnlnIMTLu9U5S_uM")  
+                               
+# ojo se borro clave key 
+# ya que puede vulnerar la info 
 
 df_final_coord_sin_na
 
