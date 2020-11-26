@@ -15,6 +15,8 @@ library(rgbif)
 library(ggthemes)
 library(ggpubr)
 library(DataExplorer)
+library(ggsci)
+library(ggpubr)
 
 # https://github.com/ropensci/rinat # 
 # documentacion: https://cran.r-project.org/web/packages/rinat/rinat.pdf # 
@@ -29,7 +31,7 @@ datos <- get_inat_obs_project("biodiversidad-en-humedales-de-quilcay-lurin-lima-
 # ojo si se desea leer una data con espacios (no delimitado por comas), en sep se debe colocar de esta forma "" (no espacios)  
 
 # tener en cuenta que la data de gbif incluye a la data de inaturalist (solo la de RG)
-gbif_data <- read.csv('/home/urieltorres/Descargas/quilcay/quilcay/ocurrencias_rgbif_quilcay.csv', header = T, sep = "", row.names = NULL)
+gbif_data <- read.csv('/media/urieltorres/VILANOVA MI ANGEL/URIEL_TORRES/UTZ/Quilcay/quilcay/ocurrencias_rgbif_quilcay.csv', header = T, sep = "", row.names = NULL)
 df <- gbif_data
 
 head(gbif_data)
@@ -74,25 +76,31 @@ dfhist2 <- dfhist[-1, ]
 ############ METODO_2 ################## 
 df2 <- rename(count(df, class, family))
 
+# se borro fila 1 sin informacion #
+df2 <- df2[-1, ]
 
-prop.table(df2$family)
+dim(df2)
+
+df2 <- df2 %>% mutate(total = sum(df2[1:47, 3])) %>%  mutate(porc = (n/total)*100)
+
 
 df2$class <- as.factor(df2$class)
 df2$family <- as.factor(df2$family)
 df2$n <- as.numeric(df2$n)
 
-# se borro fila 1 sin informacion #
-df2 <- df2[-1, ]
 
 # añadir en titulo la informacion desde que año es la data..
 # codigo? 
 
 # editar en inkscape (colores fill)? remover clases (no se aprecia bien los colores fill en las barras...)
-plot1 <- ggplot(df2, mapping = aes(fill = factor(df2$class))) + geom_col(aes(x = reorder(df2$family, +df2$n), y = df2$n)) + coord_flip() + theme_bw() + theme(axis.line = element_line()) + theme(text = element_text(size = 13)) + theme(axis.text.x = element_text(margin = margin(4, 0, 0, 0), colour = 'black'), axis.text.y = element_text(margin = margin(0, 4, 0, 0), colour = "black")) + scale_y_continuous(expand = c(0, 0)) + xlab('Familias') + ylab('Frecuencia absoluta') + labs(fill = 'Clases')
+plot1 <- ggplot(df2, mapping = aes(fill = factor(df2$class))) + geom_col(aes(x = reorder(df2$family, +df2$porc), y = df2$porc)) + coord_flip() + theme_bw() + theme(axis.line = element_line()) + theme(text = element_text(size = 13)) + theme(axis.text.x = element_text(margin = margin(4, 0, 0, 0), colour = 'black'), axis.text.y = element_text(margin = margin(0, 4, 0, 0), colour = "black")) + scale_y_continuous(breaks = seq(0, 16, by = 2), expand = c(0, 0)) + xlab('Familias') + ylab('Frecuencia relativa') + labs(fill = 'Clases')
+
+set_palette(plot1, 'jco')
 
 plot1$data
 write.csv(plot1$data, 'data_familias_frecuencia.csv', row.names = F)
-pdf('plot1.pdf')
+
+pdf('familias_grafico_barras_relativa.pdf')
 dev.off()
 
 
