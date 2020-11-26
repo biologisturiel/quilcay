@@ -213,6 +213,7 @@ df_6 <- cbind(df_5, df_4$n)
 colnames(df_6) <- c('var', 'n')
 df_7 <- df_6 %>% as.data.frame() 
 
+# NO
 # este ultimo no funciona aunque se puede aplicar a otros casos... 
 df_8 <- substr(df_7$var, 1, nchar(df_7$var) +4)
 
@@ -231,7 +232,12 @@ porc <- porcentaje*100
 
 df_fechas3 <- cbind(df_fechas2, porc)
 
-plot2  <- ggplot(df_fechas3) + geom_col(alpha = 0.9, fill = '#a9a9a9', aes(x = df_fechas3$var, y = df_fechas3$porc)) + coord_flip() + theme_bw() + theme(axis.line = element_line()) + theme(text = element_text(size = 13)) + theme(axis.text.x = element_text(margin = margin(4, 0, 0, 0), colour = 'black'), axis.text.y = element_text(margin = margin(0, 4, 0, 0), colour = "black")) + scale_y_continuous(expand = c(0, 0)) + xlab('Año') + ylab('Frecuencia relativa') 
+plot2  <- ggplot(df_fechas3) + geom_col(alpha = 0.9, fill = '#00A087B2', aes(x = df_fechas3$var, y = df_fechas3$porc)) + coord_flip() + theme_bw() + theme(axis.line = element_line()) + theme(text = element_text(size = 13)) + theme(axis.text.x = element_text(margin = margin(4, 0, 0, 0), colour = 'black'), axis.text.y = element_text(margin = margin(0, 4, 0, 0), colour = "black")) + scale_y_continuous(breaks = seq(0, 35, by = 3), expand = c(0, 0)) + xlab('Año') + ylab('Frecuencia relativa')
+
+pdf('registros_por_año_grafico_barras_frecuencias_relativa.pdf')
+dev.off(
+  
+)
 
 write.csv(plot2$data, 'data_año_registros_frecuencia_relativa.csv', row.names = F)
 
