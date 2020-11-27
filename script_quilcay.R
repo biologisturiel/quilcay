@@ -395,10 +395,8 @@ dev.off()
 # data con coordenadas # 
 write.csv(df_final_coord_sin_na, 'coordenadas_registros.csv')
 
-map3 <- map2 + geom_jitter(data = df_final_coord_sin_na, mapping = aes(x = Longitud, y = Latitud),  shape = 23, color = 'orangered2', alpha = 0.7) + theme_bw() + xlab('Longitud') + ylab('Latitud')
+map2 + geom_jitter(data = df_final_coord_sin_na, mapping = aes(x = Longitud, y = Latitud),  shape = 23, color = 'orangered2', alpha = 0.7) + theme_bw() + xlab('Longitud') + ylab('Latitud')
 
-
-library(ggmap)
 
 map2 <- qmap(location = c(lon = -76.884, lat = -12.2837), zoom = 16, source = "google", maptype = 'satellite')
 
@@ -410,7 +408,6 @@ qmap(location = c(lon = -76.885, lat = -12.2838), zoom = 16, source = "google", 
 # ojo antes de correr lo de arriba se debe tener en cuenta el signo negativo de las coordenadas, asimismo el tipo de vector.. 
 df_final_coord_sin_na$Latitud <- sub("^", "-", df_final_coord_sin_na$Latitud)
 df_final_coord_sin_na$Longitud <- sub("^", "-", df_final_coord_sin_na$Longitud)
-
 df_final_coord_sin_na$Latitud <- as.numeric(df_final_coord_sin_na$Latitud)
 df_final_coord_sin_na$Longitud <- as.numeric(df_final_coord_sin_na$Longitud)
 
