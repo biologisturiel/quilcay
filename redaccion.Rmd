@@ -1,0 +1,111 @@
+---
+title: "Redaccion_biodiversidad"
+author: "Uriel Torres"
+date: "`r format(Sys.Date(), '%Y%m%d')`"
+output: 
+  html_notebook: default
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align="center")
+library(tidyverse)
+library(knitr)
+```
+
+## Registros de biodiversidad de la base de datos GBIF de los humedales de Quilcay (Lurín, Lima) entre los años 1971 a 2020
+
+El registro de la biodiversidad de los humedales de Quilcay se ha reportado desde el año 1971 con 8 ocurrencias y recolección de especímenes por parte del Museo de Historia Natural de Londres; hasta la presente investigación (2020) se ha registrado un total de `r a <- df %>% dim(); a[1]` ocurrencias, 4717 datos corresponden a la base de datos de EOD (ebird Observation Dataset), 16 a Observation.org, 9 a iNaturalist (Research Grade), 8 al Museo de Historia Natural de Londres, y 1 a Xeno-canto. Cerca del 33% de los registros  ocurrieron en el presente año de la investigación (noviembre, 2020), a partir del año 2009 se observó una tendencia al aumento de los registros, no obstante, entre los años 1984 a 1989 se observa un ligero incremento (Figura 1). 
+
+```{r, echo = F}
+ggplot(df_fechas3) + geom_col(alpha = 0.9, fill = '#00A087B2', aes(x = df_fechas3$var, y = df_fechas3$porc)) + coord_flip() + theme_bw() + theme(axis.line = element_line()) + theme(text = element_text(size = 13)) + theme(axis.text.x = element_text(margin = margin(4, 0, 0, 0), colour = 'black'), axis.text.y = element_text(margin = margin(0, 4, 0, 0), colour = "black")) + scale_y_continuous(breaks = seq(0, 35, by = 3), expand = c(0, 0)) + xlab('Año') + ylab('Frecuencia relativa')
+```
+
+
+
+
+
+
+
+```{r, echo = F}
+map2 + geom_jitter(data = df_final_coord_sin_na, mapping = aes(x = Longitud, y = Latitud),  shape = 23, color = 'orangered2', alpha = 0.7) + theme_bw() + xlab('Longitud') + ylab('Latitud')
+
+```
+
+
+```{r, echo = F, eval = F}
+genero <- read.csv('data_familia_genero_especie.csv', sep = ',')
+genero$Especie <- as.factor(genero$Especie)
+especies <- levels(genero$Especie)
+
+df_family <- plot1$data %>% as.data.frame()
+
+df_genero <- read.csv('data_familia_genero_especie.csv', sep = ',')
+df_genero <- df_genero[, -1]
+
+rev(sort(df_family$porc))
+
+des <- arrange(df_genero, desc(n))
+sum(des$porc) - sum((des[35, 5] + des[47, 5]))
+
+df_genero$Familia <- as.factor(df_genero$Familia)
+df_genero$Género <- as.factor(df_genero$Género)
+
+rev(sort(table(df_genero$Familia)))
+length(levels(df_genero$Género))
+length(levels(df_genero$Familia))
+
+frecuencia_por_familia <- rev(sort(table(df_genero$Familia)))
+frecuencia_por_familia <- frecuencia_por_familia %>%  as.data.frame()
+```
+
+La biodiversidad de los humedales de Quilcay se constituye por `r length(especies)` especies agrupadas en `r length(levels(df_genero$Género))` y `r length(levels(df_genero$Familia))`, géneros y familias respectivamente (Tabla 1). El `r round(sum(des$porc) - sum((des[35, 5] + des[47, 5])), 2)`% de los registros fueron para aves, dentro de este grupo los Scolopacidae y Laridae alcanzaron la mayor representación con `r frecuencia_por_familia[1, 2]` géneros, seguido por los Thraupidae (`r frecuencia_por_familia[2, 2]`), Ardeidae (`r frecuencia_por_familia[3, 2]`) y Anatidae (`r frecuencia_por_familia[4, 2]`) (Figura 1). Los registros de otros taxa diferente a las aves, incluyó únicamente a los Chrysomelidae (Insecta) y Otariidae (Mammalia) (Figura 1). La especie con la mayor abundancia registrada fue *Egretta thula* con 140 ocurrencias, seguida de *Himantopus mexicanus* (135) y *Charadrius vociferus* (133). Entre las migratorias andinas, *Phoenicopterus chilensis* presentó 5 registros. *Leocuphaeus pipixcan* se registró 78 veces en el humedal. Las especies registradas solo una vez en el humedal fueron: *Anas georgica*, *Sarkidiornis melanotos*, *Saltator  striatipectus*, *Coereba flaveola*, *Columbina minuta*,  *Cinclodes   taczanowskii*, *Petrochelidon pyrrhonota*, *Oceanodroma markhami*, *Sterna nilotica*, *Pelecanoides garnotii*, *Limosa haemastica*, *Stercorarius pomarinus*, *Asemospiza sp.*, *Sicalis raimondii*,  *Anairetes flavirostris*, *Myiophobus fasciatus*.
+
+
+```{r echo = F, fig.width = 6.5, fig.height = 6.5, fig.align = 'center'}
+library(ggpubr)
+
+plot1 <- ggplot(df2, mapping = aes(fill = factor(df2$class))) + geom_col(aes(x = reorder(df2$family, +df2$porc), y = df2$porc)) + coord_flip() + theme_bw() + theme(axis.line = element_line()) + theme(text = element_text(size = 13)) + theme(axis.text.x = element_text(margin = margin(4, 0, 0, 0), colour = 'black'), axis.text.y = element_text(margin = margin(0, 4, 0, 0), colour = "black")) + scale_y_continuous(breaks = seq(0, 16, by = 2), expand = c(0, 0)) + xlab('Familias') + ylab('Frecuencia relativa') + labs(fill = 'Clases') 
+
+set_palette(plot1, 'jco')
+```
+
+
+
+
+```{r, echo = F}
+genero <- read.csv('data_familia_genero_especie.csv', sep = ',')
+library(knitr)
+library(kableExtra)
+library(magrittr)
+kable(genero, booktabs = T, caption = 'Registros de GBIF para los humedales de Quilcay (Lurín, Lima) entre 1971 al 2020') %>%
+  kable_styling(latex_options = 'striped')
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

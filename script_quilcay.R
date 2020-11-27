@@ -116,6 +116,9 @@ gsub(".*?_([[:digit:]]+)_.*", "\\1", df$decimalLatitude)
 
 glimpse(df)
 
+# todo lo de abajo es para obtener una data que contenga la cantidad de datos por año... y hacer un plot de geom_col con frecuencia relativa o absoluta de registros por año, tener en cuenta que ya hay un plot simlar en... 
+# https://www.gbif.org/occurrence/charts?license=CC0_1_0&geometry=POLYGON((-76.87601%20-12.2851,-76.88026%20-12.28205,-76.88239%20-12.28067,-76.8842%20-12.28219,-76.88799%20-12.28079,-76.8893%20-12.28465,-76.87818%20-12.28943,-76.87601%20-12.2851))
+
 a <- rename(count(df, depthAccuracy))
 colnames(a) <- c('var', 'n')
 
@@ -232,17 +235,23 @@ porc <- porcentaje*100
 
 df_fechas3 <- cbind(df_fechas2, porc)
 
+#el plot de abajo NO CONCUERDA con el de gbif (no hubo una seleccion rigurosa? -> revisar la data df_fecha3 solo cuenta con 530 datos...)
+# https://www.gbif.org/occurrence/charts?geometry=POLYGON((-76.87601%20-12.2851,-76.88026%20-12.28205,-76.88239%20-12.28067,-76.8842%20-12.28219,-76.88799%20-12.28079,-76.8893%20-12.28465,-76.87818%20-12.28943,-76.87601%20-12.2851))
+
+
 plot2  <- ggplot(df_fechas3) + geom_col(alpha = 0.9, fill = '#00A087B2', aes(x = df_fechas3$var, y = df_fechas3$porc)) + coord_flip() + theme_bw() + theme(axis.line = element_line()) + theme(text = element_text(size = 13)) + theme(axis.text.x = element_text(margin = margin(4, 0, 0, 0), colour = 'black'), axis.text.y = element_text(margin = margin(0, 4, 0, 0), colour = "black")) + scale_y_continuous(breaks = seq(0, 35, by = 3), expand = c(0, 0)) + xlab('Año') + ylab('Frecuencia relativa')
 
 pdf('registros_por_año_grafico_barras_frecuencias_relativa.pdf')
-dev.off(
-  
-)
+dev.off()
 
 write.csv(plot2$data, 'data_año_registros_frecuencia_relativa.csv', row.names = F)
 
 pdf('plot2.pdf')
 dev.off()
+
+
+año <- rename(count(df, df$year))
+
 
 
 df$genus <- as.factor(df$genus)
@@ -383,7 +392,13 @@ map <- qmap(location = 'Humedales de Quilcay', zoom = 16, maptype = 'satellite')
 pdf('mapa_con_ocurrencias.pdf')
 dev.off()
 
+# data con coordenadas # 
+write.csv(df_final_coord_sin_na, 'coordenadas_registros.csv')
+
 map3 <- map2 + geom_jitter(data = df_final_coord_sin_na, mapping = aes(x = Longitud, y = Latitud),  shape = 23, color = 'orangered2', alpha = 0.7) + theme_bw() + xlab('Longitud') + ylab('Latitud')
+
+
+library(ggmap)
 
 map2 <- qmap(location = c(lon = -76.884, lat = -12.2837), zoom = 16, source = "google", maptype = 'satellite')
 
@@ -398,51 +413,6 @@ df_final_coord_sin_na$Longitud <- sub("^", "-", df_final_coord_sin_na$Longitud)
 
 df_final_coord_sin_na$Latitud <- as.numeric(df_final_coord_sin_na$Latitud)
 df_final_coord_sin_na$Longitud <- as.numeric(df_final_coord_sin_na$Longitud)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
