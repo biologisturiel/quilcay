@@ -7,7 +7,6 @@ library(rgdal)
 library(tidyverse)
 library(rworldxtra)
 library(rnaturalearthdata)
-library(rnaturalearth)
 library(raster)
 library(rgeos)
 library(mapview)
@@ -187,6 +186,7 @@ df_1 <- drbind[nchar(drbind$var) > 15,  ]
 dim(df_1)
 
 df_2 <- df_1[nchar(df_1$n) != 3,  ]
+write.csv(df2, 'df2.csv')
 dim(df_2)
 
 #  https://stackoverflow.com/questions/26319567/use-grepl-to-search-either-of-multiple-substrings-in-a-text
@@ -234,6 +234,8 @@ porcentaje <- prop.table(df_fechas2$n)
 porc <- porcentaje*100
 
 df_fechas3 <- cbind(df_fechas2, porc)
+
+write.csv(df_fechas3, 'df_fechas3.csv')
 
 #el plot de abajo NO CONCUERDA con el de gbif (no hubo una seleccion rigurosa? -> revisar la data df_fecha3 solo cuenta con 530 datos...)
 # https://www.gbif.org/occurrence/charts?geometry=POLYGON((-76.87601%20-12.2851,-76.88026%20-12.28205,-76.88239%20-12.28067,-76.8842%20-12.28219,-76.88799%20-12.28079,-76.8893%20-12.28465,-76.87818%20-12.28943,-76.87601%20-12.2851))
@@ -353,6 +355,8 @@ fila_na <- apply(df_final_coordenadas, 1, function(x)
 sum(fila_na)
 
 df_final_coord_sin_na <-  df_final_coordenadas[!fila_na, ]
+write.csv(df_final_coord_sin_na, 'df_final_coord_sin_na.csv')
+
 dim(df_final_coord_sin_na)
 
 
